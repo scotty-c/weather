@@ -28,4 +28,4 @@ jobs:
           mkdir -p release
           mv weather ./release/weather-$VERSION
           gitea-release upload -t $VERSION -a ./release/binary-$VERSION -r $GITEA_TOKEN
-           gitea-release create -t $VERSION -n "Release $VERSION" -b "Release $VERSION description" -r $GITEA_TOKEN
+          gitea-release create -t $VERSION -n "Release $VERSION" -b "Release $VERSION description" -r $GITEA_TOKEN
