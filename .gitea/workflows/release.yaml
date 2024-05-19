@@ -25,7 +25,7 @@ jobs:
       
       - name: Use Go Action  
         id: use-go-action
-        uses: actions/release-action@main
+        uses: https://gitea.com/actions/release-action@main
         with:
           files: |-
             release/**            
