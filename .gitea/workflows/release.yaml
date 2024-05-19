@@ -24,8 +24,8 @@ jobs:
         run: |
           VERSION=$(git describe --tags --abbrev=0)
           mkdir -p release
-          mv ./path/to/your/binary ./release/binary-$VERSION
-          gitea-release upload -t $VERSION -a ./release/binary-$VERSION -r $GITEA_TOKEN
+          mv weather weather-$VERSION
+          gitea-release upload -t $VERSION -a weather-$VERSION -r $GITEA_TOKEN
 
       - name: Create release
         run: |
