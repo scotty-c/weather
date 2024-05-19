@@ -42,4 +42,3 @@ jobs:
           -H "Authorization: token $GITEA_TOKEN" \
           -F "name=binary-$VERSION" \
           -F "file=@./release/binary-$VERSION"
-name: Build and Upload Binary
