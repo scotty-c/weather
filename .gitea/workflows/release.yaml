@@ -27,5 +27,11 @@ jobs:
           VERSION=$(git describe --tags --abbrev=0)
           mkdir -p release
           mv weather ./release/weather-$VERSION
-          gitea-release upload -t $VERSION -a ./release/binary-$VERSION -r $GITEA_TOKEN
-          gitea-release create -t $VERSION -n "Release $VERSION" -b "Release $VERSION description" -r $GITEA_TOKEN
+      
+      - name: Use Go Action  
+        id: use-go-action
+        uses: actions/release-action@main
+        with:
+          files: |-
+            release/**            
+          api_key: '${{secrets.GITEA_TOKEN}}'
