@@ -27,18 +27,5 @@ jobs:
           VERSION=$(git describe --tags --abbrev=0)
           mkdir -p release
           mv weather ./release/weather-$VERSION
-          curl -X POST "https://git.scottyc.dev/api/v1/repos/scottyc/weather/releases" \
-          -H "Content-Type: application/json" \
-          -H "Authorization: token $GITEA_TOKEN" \
-          -d '{
-                "tag_name": "'$VERSION'",
-                "target_commitish": "main",
-                "name": "Release '$VERSION'",
-                "body": "Description for release '$VERSION'",
-                "draft": false,
-                "prerelease": false
-              }'
-          curl -X POST "https://git.scottyc.ev/api/v1/repos/scottyc/weather/releases/$VERSION/assets" \
-          -H "Authorization: token $GITEA_TOKEN" \
-          -F "name=binary-$VERSION" \
-          -F "file=@./release/binary-$VERSION"
+          gitea-release upload -t $VERSION -a ./release/binary-$VERSION -r $GITEA_TOKEN
+           gitea-release create -t $VERSION -n "Release $VERSION" -b "Release $VERSION description" -r $GITEA_TOKEN
