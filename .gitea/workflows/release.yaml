@@ -19,14 +19,9 @@ jobs:
 
       - name: Build binary
         run: make build
-
-      - name: Upload binary
-        env:
-          GITEA_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
-        run: |
-          VERSION=$(git describe --tags --abbrev=0)
-          mkdir -p release
-          mv weather ./release/weather-$VERSION
+             VERSION=$(git describe --tags --abbrev=0)
+             mkdir -p release
+             mv weather ./release/weather-$VERSION
       
       - name: Use Go Action  
         id: use-go-action
