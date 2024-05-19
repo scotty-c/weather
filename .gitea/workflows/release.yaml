@@ -18,17 +18,13 @@ jobs:
           go-version: '1.21.6'
 
       - name: Build binary
-        run: make build
-      
-      - name: Move binary to release folder
         run: VERSION=$(git describe --tags --abbrev=0)
-             mkdir -p release
-             mv weather ./release/weather-$VERSION
+             go build -o ./bin/weather-${VERSION}-linux-amd64 main.go
       
       - name: Use Go Action  
         id: use-go-action
         uses: https://gitea.com/actions/release-action@main
         with:
           files: |-
-            release/**            
+            bin/**            
           api_key: '${{secrets.GITEA_TOKEN}}'
