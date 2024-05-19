@@ -2,8 +2,8 @@ name: Build and Upload Binary
 
 on:
   push:
-    branches:
-      - 'release/*'
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
         run: |
           VERSION=$(git describe --tags --abbrev=0)
           mkdir -p release
-          mv ./path/to/your/binary ./release/binary-$VERSION
+          mv weather ./release/weather-$VERSION
           curl -X POST "https://git.scottyc.dev/api/v1/repos/scottyc/weather/releases" \
           -H "Content-Type: application/json" \
           -H "Authorization: token $GITEA_TOKEN" \
