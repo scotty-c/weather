@@ -1,0 +1,33 @@
+name: Build and Upload Binary
+
+on:
+  push:
+    branches:
+      - 'release/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.21.6'
+
+      - name: Build binary
+        run: make build
+
+      - name: Upload binary
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          mkdir -p release
+          mv ./path/to/your/binary ./release/binary-$VERSION
+          gitea-release upload -t $VERSION -a ./release/binary-$VERSION -r $GITEA_TOKEN
+
+      - name: Create release
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          gitea-release create -t $VERSION -n "Release $VERSION" -b "Release $VERSION description" -r $GITEA_TOKEN
