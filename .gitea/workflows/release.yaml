@@ -19,9 +19,7 @@ jobs:
 
       - name: Build binary
         run: make build
-      
-      - name: Move binary to release folder
-        run: VERSION=$(git describe --tags --abbrev=0)
+             VERSION=$(git describe --tags --abbrev=0)
              mkdir -p release
              mv weather ./release/weather-$VERSION
       
