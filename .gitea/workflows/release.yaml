@@ -19,6 +19,7 @@ jobs:
 
       - name: Build binary
         run: VERSION=$(git describe --tags --abbrev=0)
+             echo "Building version $VERSION"
              go build -o ./bin/weather-$VERSION-linux-amd64 main.go
       
       - name: Use Go Action  
