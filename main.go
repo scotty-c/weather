@@ -35,6 +35,10 @@ func location() (string, string) {
 		fmt.Println("Error: ", err)
 	}
 
+	if data.City == "" {
+		return location()
+	}
+
 	return data.City, data.Country
 }
 
