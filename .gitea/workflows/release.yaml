@@ -18,7 +18,7 @@ jobs:
           go-version: '1.21.6'
 
       - name: Build binary
-        run: make build
+        run: go build -o weather main.go
              VERSION=$(git describe --tags --abbrev=0)
              mkdir -p release
              mv weather ./release/weather-$VERSION
