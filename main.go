@@ -18,7 +18,8 @@ type Response struct {
 }
 
 func location() (string, string) {
-	url := "https://ipapi.co/json/"
+	//url := "https://ipapi.co/json/"
+	url := "https://api.seeip.org/geoip"
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("Error: ", err)
