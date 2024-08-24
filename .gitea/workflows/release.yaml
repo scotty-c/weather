@@ -1,0 +1,29 @@
+name: Build and Upload Binary
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.6'
+
+      - name: Build binary
+        run: make release
+      
+      - name: Use Go Action  
+        id: use-go-action
+        uses: https://gitea.com/actions/release-action@main
+        with:
+          files: |-
+            bin/**            
+          api_key: '${{secrets.GITEA_TOKEN}}'
