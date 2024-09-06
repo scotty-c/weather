@@ -5,32 +5,25 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
+	"net/url"
 )
 
 // Define a struct to model the JSON response from the geo-location API.
 type Response struct {
-	IP         string  `json:"ip"`        // IP address of the requestor
-	City       string  `json:"city"`      // City of the IP address
-	Region     string  `json:"region"`    // Region or state of the IP address
-	Country    string  `json:"country"`   // Country of the IP address
-	Lattitude  float64 `json:"latitude"`  // Latitude of the IP address
-	Longtitude float64 `json:"longitude"` // Longitude of the IP address
+	IP      string `json:"ip"`
+	City    string `json:"city"`
+	Country string `json:"country"`
 }
 
-// Define a maximum number of retries to prevent infinite recursion.
-const maxRetries = 5
-
 // locationWithRetry attempts to fetch the location, retrying up to maxRetries times if the city is not found.
-func locationWithRetry(retryCount int) (string, string) {
+func locationWithRetry(apiURL string, retryCount int) (string, string) {
+	const maxRetries = 5
 	if retryCount >= maxRetries {
-		// If the maximum number of retries is reached, return an error or empty strings.
 		fmt.Println("Maximum retries reached. Unable to fetch location.")
 		return "", ""
 	}
 
-	url := "https://api.seeip.org/geoip"
-	resp, err := http.Get(url)
+	resp, err := http.Get(apiURL)
 	if err != nil {
 		fmt.Println("Error: ", err)
 		return "", ""
@@ -51,36 +44,43 @@ func locationWithRetry(retryCount int) (string, string) {
 	}
 
 	if data.City == "" {
-		// Retry with incremented retry count if city is not found.
-		return locationWithRetry(retryCount + 1)
+		return locationWithRetry(apiURL, retryCount+1)
 	}
 
-	// Add a return statement at the end of the function.
 	return data.City, data.Country
 }
 
 // wttr fetches and returns the weather information for the given location.
-func wttr() string {
-	city, country := locationWithRetry(0)                           // Get the city and country for the IP address
-	u := "https://v3.wttr.in/" + city + "+" + country + "?format=3" // Construct the URL for the weather API
-	resp, err := http.Get(u)                                        // Send a GET request to the weather API
-	if err != nil {
-		fmt.Println("Error: ", err) // Print error if the request fails
-	}
-	defer resp.Body.Close() // Ensure the response body is closed after processing
-
-	body, err := io.ReadAll(resp.Body) // Read the entire response body
-	if err != nil {
-		fmt.Println("Error: ", err) // Print error if reading the body fails
+func wttr(geoAPIURL, weatherAPIBaseURL string) string {
+	city, country := locationWithRetry(geoAPIURL, 0)
+	if city == "" {
+		return "Could not determine location."
 	}
 
-	bodyString := string(body)                               // Convert the response body to a string
-	bodyString = strings.ReplaceAll(bodyString, "+", "")     // Remove '+' characters from the response
-	bodyString = strings.ReplaceAll(bodyString, country, "") // Remove the country name from the response
+	// Combine city and country to create a specific query, e.g., "Newcastle,Australia" or "Newcastle,UK"
+	location := fmt.Sprintf("%s,%s", url.QueryEscape(city), url.QueryEscape(country))
 
-	return bodyString // Return the weather information as a string
+	// Construct the weather API URL to return both weather emoji and current temperature.
+	u := weatherAPIBaseURL + location + "?format=%c+%t"
+	resp, err := http.Get(u)
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return "Unable to fetch weather."
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return "Unable to read weather data."
+	}
+
+	// Combine the city name with the weather data
+	return fmt.Sprintf("%s: %s", city, string(body))
 }
 
 func main() {
-	fmt.Println(string(wttr())) // Print the weather information for the IP address's location
+	geoAPIURL := "https://api.seeip.org/geoip"
+	weatherAPIBaseURL := "https://v3.wttr.in/"
+	fmt.Println(wttr(geoAPIURL, weatherAPIBaseURL)) // Print the city name along with current weather condition and temperature
 }
