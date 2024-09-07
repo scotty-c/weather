@@ -28,8 +28,6 @@ jobs:
       - name: Build release binary
         run: |
           GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} make release
-          mv ./bin/weather ./bin/weather-${{ github.ref }}-${{ matrix.os }}-${{ matrix.arch }}
-
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
