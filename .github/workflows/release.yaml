@@ -34,8 +34,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}  # Tag name that triggered the action
-          release_name: ${{ github.ref }}  # Release title same as the tag
+          tag_name: ${{ github.ref_name }}  # Tag name that triggered the action
+          release_name: ${{ github.ref_name }}  # Release title same as the tag
           draft: false
           prerelease: false
 
@@ -43,6 +43,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./bin/weather-${{ github.ref }}-${{ matrix.os }}-${{ matrix.arch }}
-          asset_name: weather-${{ github.ref }}-${{ matrix.os }}-${{ matrix.arch }}
+          asset_path: ./bin/weather-${{ github.ref_name }}-${{ matrix.os }}-${{ matrix.arch }}
+          asset_name: weather-${{ github.ref_name }}-${{ matrix.os }}-${{ matrix.arch }}
           asset_content_type: application/octet-stream
