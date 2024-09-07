@@ -1,0 +1,49 @@
+name: Build and Upload Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Matches tag versions like v0.0.1, v1.2.3, etc.
+
+jobs:
+  build:
+    name: Build and Upload Binaries
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: [linux, darwin]  # Add more OSes as needed
+        arch: [amd64, arm64]  # Add more architectures as needed
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.6'  # Adjust to your Go version if needed
+
+      - name: Build release binary
+        run: |
+          GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} make release
+          mv ./bin/weather ./bin/weather-${{ github.ref }}-${{ matrix.os }}-${{ matrix.arch }}
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}  # Tag name that triggered the action
+          release_name: ${{ github.ref }}  # Release title same as the tag
+          draft: false
+          prerelease: false
+
+      - name: Upload binary to GitHub Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bin/weather-${{ github.ref }}-${{ matrix.os }}-${{ matrix.arch }}
+          asset_name: weather-${{ github.ref }}-${{ matrix.os }}-${{ matrix.arch }}
+          asset_content_type: application/octet-stream

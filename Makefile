@@ -19,4 +19,6 @@ release: test
 	@echo "Building release..."
 	@VERSION=$$(git tag --sort=-v:refname | head -n 1); \
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./bin/$(PROJECT_NAME)-$$VERSION-linux-amd64 main.go; \
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o ./bin/$(PROJECT_NAME)-$$VERSION-linux-arm64 main.go	
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o ./bin/$(PROJECT_NAME)-$$VERSION-linux-arm64 main.go; \
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o ./bin/$(PROJECT_NAME)-$$VERSION-darwin-amd64 main.go; \
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o ./bin/$(PROJECT_NAME)-$$VERSION-windows-amd64 main.go	
