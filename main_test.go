@@ -11,13 +11,11 @@ import (
 // Mock server response for the geo-location API
 func mockGeoLocationHandler(w http.ResponseWriter, r *http.Request) {
 	response := Response{
-		IP:         "123.456.789.012",
-		City:       "Test City",
-		Region:     "Test Region",
-		Country:    "Test Country",
-		Latitude:   12.34,
-		Longitude:  56.78,
+		IP:      "123.456.789.012",
+		City:    "Test City",
+		Country: "Test Country",
 	}
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -32,6 +30,7 @@ func TestLocationWithRetry(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(mockGeoLocationHandler))
 	defer server.Close()
 
+	// Test the locationWithRetry function with the mock server URL
 	city, country := locationWithRetry(server.URL, 0)
 	if city != "Test City" || country != "Test Country" {
 		t.Errorf("Expected (Test City, Test Country), got (%s, %s)", city, country)
@@ -47,11 +46,10 @@ func TestWttr(t *testing.T) {
 	weatherServer := httptest.NewServer(http.HandlerFunc(mockWeatherHandler))
 	defer weatherServer.Close()
 
+	// Test the wttr function with the mock server URLs
 	weather := wttr(geoLocationServer.URL, weatherServer.URL+"/")
 	expected := "Test City: Clear skies"
 	if !strings.Contains(weather, expected) {
 		t.Errorf("Expected %s, got %s", expected, weather)
 	}
 }
-
-

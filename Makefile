@@ -15,7 +15,7 @@ test:
 	@echo "Running tests..."
 	go test -v ./...
 
-release:
+release: test
 	@echo "Building release..."
 	@VERSION=$$(git tag --sort=-v:refname | head -n 1); \
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./bin/$(PROJECT_NAME)-$$VERSION-linux-amd64 main.go; \
