@@ -82,7 +82,7 @@ weather/
    - This API returns the city and country based on the user's IP address.
 
 2. **Weather API**:
-   - URL: `https://v3.wttr.in/<city>+<country>?format=3`
+   - URL: `https://v3.wttr.in/<city>+<country>?format=%c+%t`
    - This API returns the current weather for the specified city and country.
 
 ## Testing
