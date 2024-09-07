@@ -94,7 +94,7 @@ Unit tests are provided in the `main_test.go` file. The tests use mock servers t
 You can run the tests using the following command:
 
 ```bash
-go test ./...
+make test
 ```
 
 This command will execute all the tests and display the results.
