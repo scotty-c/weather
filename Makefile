@@ -11,9 +11,19 @@ clean:
 	@echo "Cleaning up..."
 	@rm -f $(PROJECT_NAME)
 
+test-local:
+	@echo "Running tests..."
+
+	go test -v ./...
+
 test:
 	@echo "Running tests..."
-	go test -v ./...
+	@if [ "$(GOARCH)" = "amd64" ] && [ "$(GOOS)" = "linux" ]; then \
+		echo "Running tests..."; \
+		go test -v ./...; \
+	else \
+		echo "Skipping tests for cross-compilation..."; \
+	fi
 
 release: test
 	@echo "Building release..."
