@@ -10,6 +10,7 @@ build:
 clean:
 	@echo "Cleaning up..."
 	@rm -f $(PROJECT_NAME)
+	@rm -rf bin/
 
 test-local:
 	@echo "Running tests..."
