@@ -12,19 +12,9 @@ clean:
 	@rm -f $(PROJECT_NAME)
 	@rm -rf bin/
 
-test-local:
-	@echo "Running tests..."
-
-	go test -v ./...
-
 test:
 	@echo "Running tests..."
-	@if [ "$(GOARCH)" = "amd64" ] && [ "$(GOOS)" = "linux" ]; then \
-		echo "Running tests..."; \
-		go test -v ./...; \
-	else \
-		echo "Skipping tests for cross-compilation..."; \
-	fi
+	go test -v ./...
 
 release: test
 	@echo "Building release..."
